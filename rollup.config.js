@@ -5,16 +5,19 @@ const extensions = [
 	'.js', '.jsx', '.ts', '.tsx',
 ];
 
-module.exports = {
-  input: 'index.ts',
-  output: {
-    file: './dist/index.js',
-    format: 'umd',
-    sourcemap: true,
-    name: 'FaiDnD',
+function output(ext, format = 'umd') {
+  return {
+    name: 'FaiDnd',
+    file: `./dist/index.${ext}`,
+    format,
     exports: 'named',
-  },
-	plugins: [
+  };
+}
+
+const umd = {
+  input: 'index.ts',
+  output: output('js'),
+  plugins: [
     babel({
 			extensions,
       include: ['./index.ts', 'src/**/*'],
@@ -23,6 +26,18 @@ module.exports = {
 		commonjs({
 			extensions
 		}),
-    uglify()
   ],
 };
+
+const min = {
+  ...umd,
+  output: output('min.js'),
+  plugins: [...umd.plugins, uglify()],
+}
+
+const es = {
+  ...umd,
+  output: output('esm.js', 'esm'),
+}
+
+module.exports = [umd, min, es];
