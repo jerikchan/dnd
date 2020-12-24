@@ -2,7 +2,7 @@ import { containerClass, disbaleTouchActions, dropPlaceholderFlexContainerClass,
 import { Dictionary } from './interfaces';
 
 const verticalWrapperClass = {
-	'overflow': 'hidden',
+	// 'overflow': 'hidden',
 	'display': 'block'
 }
 
@@ -64,12 +64,12 @@ const css = {
 	},
 	[`.${containerClass}.horizontal > .${dropPlaceholderWrapperClass}`]: {
 		'height': '100%',
-		'overflow': 'hidden',
+		// 'overflow': 'hidden',
 		'display': 'table-cell',
 		'vertical-align': 'top',
 	},
 	[`.${containerClass}.vertical > .${dropPlaceholderWrapperClass}`]: {
-		'overflow': 'hidden',
+		// 'overflow': 'hidden',
 		'display': 'block',
 		'width': '100%',
 	},
