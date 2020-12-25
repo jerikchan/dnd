@@ -61,4 +61,5 @@ export interface ContainerOptions {
 	getGhostParent?: () => HTMLElement;
 	onDragEnd?: DragEndCallback;
 	dropPlaceholder?: DropPlaceholderOptions | boolean;	
+	disabled?: boolean;
 }
