@@ -86,7 +86,7 @@ const css = {
 	},
 	[`.${guidelineClass}`]: {
 		'position': 'fixed',
-		'border-color': 'red',
+		'border-color': '#5874d8',
 		'border-width': '0',
 		'z-index': '1001',
 	},

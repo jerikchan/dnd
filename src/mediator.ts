@@ -600,10 +600,18 @@ function fireOnDragStartEnd(isStart: boolean) {
 }
 
 function getSnappableInfo(draggableInfo: DraggableInfo) {
-  const { element: snappableElement } = draggableInfo;
-  const elementGuidelines = Array.prototype.slice.call(document.querySelectorAll("." + constants.wrapperClass)).filter((element) => {
-    return element !== snappableElement && element !== ghostInfo.ghost;
-  });
+  const { elementGuidelines = [] } = draggableInfo.container.getOptions();
+  if (!elementGuidelines.length) {
+    containers.forEach(p => {
+      const containerOptions = p.getOptions();
+      if (containerOptions.snappable && containerOptions.behaviour === 'drop-zone') {
+        p.draggables.forEach(d => {
+          elementGuidelines.push(d);
+        });
+        elementGuidelines.push(p.element);
+      }
+    });
+  }
 
   return snappable(draggableInfo, elementGuidelines);
 }

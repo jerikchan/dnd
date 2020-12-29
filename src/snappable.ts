@@ -324,6 +324,8 @@ function getRect(ghostInfo: GhostInfo, distX?: number, distY?: number) {
     bottom: top + rect.height,
     width: rect.width,
     height: rect.height,
+    middle: top + rect.height / 2,
+    center: left + rect.width / 2,
   };
 }
 
@@ -421,14 +423,18 @@ export default function snappable(draggableInfo: DraggableInfo, elementGuideline
 
   function drag(ghostInfo: GhostInfo) {
     guidelines = getElementGuidelines(elementGuidelines);
+    guidelines = guidelines.filter(({ element }) => {
+      return element !== draggableInfo.element
+        && element !== ghostInfo.ghost;
+    });
+
+    if (!guidelines.length) {
+      return;
+    }
 
     const snapInfos: SnapInfos = [];
     const rect = getRect(ghostInfo);
-    (rect as any).middle = (rect.top + rect.bottom) / 2;
-    (rect as any).center = (rect.left + rect.right) / 2;
-
     snapInfos.push(checkSnaps(rect, guidelines, { snapThreshold: 0 }));
-
     const verticalSnapPoses: SnappableRenderType[] = [];
     const horizontalSnapPoses: SnappableRenderType[] = [];
     const verticalGuidelines: Guideline[] = [];

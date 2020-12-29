@@ -1,3 +1,5 @@
+import { ElementGuidelines } from "./interfaces";
+
 export interface FaiDnD {
 	dispose: () => void;
 	setOptions: (options: ContainerOptions, merge?: boolean) => void;	
@@ -98,4 +100,5 @@ export interface ContainerOptions {
 	dropPlaceholder?: DropPlaceholderOptions | boolean;	
 	disabled?: boolean;
 	snappable?: boolean;
+	elementGuidelines?: ElementGuidelines;
 }
