@@ -1,4 +1,4 @@
-import { addChildAt, removeChildAt } from './utils';
+import { addChildAt, removeChildAt, getFirstElementChild } from './utils';
 import {
 	wrapperClass,
 } from './constants';
@@ -17,7 +17,7 @@ export function domDropHandler({ element, draggables }: ContainerProps) {
 		if (addedIndex !== null) {
 			const wrapper = window.document.createElement('div');
 			wrapper.className = `${wrapperClass}`;
-			wrapper.appendChild(removedWrapper && removedWrapper.firstElementChild ? removedWrapper.firstElementChild : droppedElement);
+			wrapper.appendChild(removedWrapper && getFirstElementChild(removedWrapper as HTMLElement) ? getFirstElementChild(removedWrapper as HTMLElement) : droppedElement);
 			addChildAt(element, wrapper, addedIndex);
 			if (addedIndex >= draggables.length) {
 				draggables.push(wrapper);

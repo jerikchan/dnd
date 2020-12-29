@@ -183,10 +183,17 @@ export const hasParent = (element: HTMLElement, parent: HTMLElement) => {
   return false;
 };
 
+function matches(element: Element, s: string) {
+  var matches = ((element as any).document || element.ownerDocument).querySelectorAll(s),
+    i = matches.length;
+  while (--i >= 0 && matches.item(i) !== element) { }
+  return i > -1;
+};
+
 export const getParent = (element: Element | null, selector: string) => {
   let current: Element | null = element;
   while (current) {
-    if (current.matches(selector)) {
+    if (matches(current, selector)) {
       return current;
     }
     current = current.parentElement;
@@ -271,12 +278,12 @@ export const isMobile = () => {
 
 export const clearSelection = () => {
   if (window.getSelection) {
-    if (window.getSelection().empty) {
+    if ((window.getSelection() as any).empty) {
       // Chrome
-      window.getSelection().empty();
-    } else if (window.getSelection().removeAllRanges) {
+      (window.getSelection() as any).empty();
+    } else if ((window.getSelection() as any).removeAllRanges) {
       // Firefox
-      window.getSelection().removeAllRanges();
+      (window.getSelection() as any).removeAllRanges();
     }
   } else if ((window.document as any).selection) {
     // IE?
@@ -312,4 +319,59 @@ export const getDistanceToParent = (parent: HTMLElement, child: HTMLElement): nu
 
 export function isVisible(rect: Rect): boolean {
   return !(rect.bottom <= rect.top || rect.right <= rect.left);
+}
+
+export function groupBy<T>(arr: T[], func: (el: T, index: number, arr: T[]) => any) {
+  const groups: T[][] = [];
+  const groupKeys: any[] = [];
+
+  arr.forEach((el, index) => {
+      const groupKey = func(el, index, arr);
+      const keyIndex = groupKeys.indexOf(groupKey);
+      const group = groups[keyIndex] || [];
+
+      if (keyIndex === -1) {
+          groupKeys.push(groupKey);
+          groups.push(group);
+      }
+      group.push(el);
+  });
+  return groups;
+}
+
+export function findIndex<T>(
+  arr: T[],
+  callback: (element: T, index: number, arr: T[]) => any,
+  defaultIndex: number = -1,
+): number {
+  const length = arr.length;
+
+  for (let i = 0; i < length; ++i) {
+    if (callback(arr[i], i, arr)) {
+      return i;
+    }
+  }
+  return defaultIndex;
+}
+
+export function find<T>(
+  arr: T[],
+  callback: (element: T, index: number, arr: T[]) => any,
+  defalutValue?: T,
+): T | undefined {
+  const index = findIndex(arr, callback);
+
+  return index > - 1 ? arr[index] : defalutValue;
+}
+
+export function getFirstElementChild(element: HTMLElement) {
+  let node,
+    nodes = element.childNodes,
+    i = 0;
+  while ((node = nodes[i++])) {
+    if (node.nodeType === 1) {
+      return node;
+    }
+  }
+  return null;
 }

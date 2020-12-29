@@ -1,11 +1,11 @@
-import { animationClass, containerClass, containerInstance, dropPlaceholderFlexContainerClass, dropPlaceholderInnerClass, dropPlaceholderWrapperClass, stretcherElementClass, stretcherElementInstance, translationValue, wrapperClass, dropPlaceholderDefaultClass } from './constants';
+import { animationClass, containerClass, containerInstance, dropPlaceholderFlexContainerClass, dropPlaceholderInnerClass, dropPlaceholderWrapperClass, stretcherElementClass, stretcherElementInstance, translationValue, wrapperClass, dropPlaceholderDefaultClass, guidelineClass } from './constants';
 import { defaultOptions } from './defaults';
 import { domDropHandler } from './dropHandlers';
 import { ContainerOptions, FaiDnD, FaiDnDCreator, DropPlaceholderOptions, DropResult } from './exportTypes';
 import { ContainerProps, DraggableInfo, DragInfo, DragResult, ElementX, IContainer, LayoutManager } from './interfaces';
 import layoutManager from './layoutManager';
 import Mediator from './mediator';
-import { addClass, getParent, getParentRelevantContainerElement, hasClass, listenScrollParent, removeClass } from './utils';
+import { addClass, getParent, getParentRelevantContainerElement, hasClass, listenScrollParent, removeClass, getFirstElementChild } from './utils';
 
 function setAnimation(element: HTMLElement, add: boolean, animationDuration = defaultOptions.animationDuration) {
   if (add) {
@@ -73,7 +73,7 @@ function unwrapChildren(element: HTMLElement) {
     Array.prototype.forEach.call(element.children, (child: HTMLElement) => {
       if (child.nodeType === Node.ELEMENT_NODE) {
         if (hasClass(child, wrapperClass)) {
-          element.insertBefore(child.firstElementChild as HTMLElement, child);
+          element.insertBefore(getFirstElementChild(child) as HTMLElement, child);
           element.removeChild(child);
         }
       }
@@ -165,11 +165,12 @@ function handleDrop({ element, draggables, layout, getOptions }: ContainerProps)
           addedIndex !== null ? (removedIndex !== null && removedIndex < addedIndex ? addedIndex - 1 : addedIndex) : null;
         
         // position
+        const rectangles = layout.getContainerRectangles();
         const position = getOptions().behaviour === "drop-zone"
           ? actualAddIndex !== null
             ? {
-              x: draggableInfo.position.x - draggableInfo.size.offsetWidth / 2 - layout.getContainerRectangles().visibleRect.left,
-              y: draggableInfo.position.y - draggableInfo.size.offsetHeight / 2 - layout.getContainerRectangles().visibleRect.top,
+              x: draggableInfo.position.x - draggableInfo.size.offsetWidth / 2 - rectangles.rect.left,
+              y: draggableInfo.position.y - draggableInfo.size.offsetHeight / 2 - rectangles.rect.top,
             }
             : null
           : null;
@@ -178,7 +179,6 @@ function handleDrop({ element, draggables, layout, getOptions }: ContainerProps)
           removedIndex,
           addedIndex: actualAddIndex,
           payload: draggableInfo.payload,
-          // droppedElement: draggableInfo.element.firstElementChild,
           position,
         };
         dropHandler(dropHandlerParams, getOptions().onDrop);
@@ -224,6 +224,21 @@ function setRemovedItemVisibilty({ draggables, layout }: ContainerProps) {
 function getPosition({ element, layout }: ContainerProps) {
   return ({ draggableInfo }: DragInfo) => {
     let hitElement = document.elementFromPoint(draggableInfo.position.x, draggableInfo.position.y);
+    
+    let elements = [];
+    while (hitElement && hasClass(hitElement as HTMLElement, guidelineClass)) {
+      elements.push({
+        hitElement,
+        display: (hitElement as HTMLElement).style.display,
+      });
+      
+      (hitElement as HTMLElement).style.display = "none";
+      hitElement = document.elementFromPoint(draggableInfo.position.x, draggableInfo.position.y);
+    }
+
+    elements.forEach(({ hitElement, display }) => {
+      (hitElement as HTMLElement).style.display = display;
+    });
 
     // TODO: if center is out of bounds use mouse position for hittest
     // if (!hitElement) {
@@ -338,7 +353,7 @@ function drawDropPlaceholder({ layout, element, getOptions }: ContainerProps) {
           if (showOnTop) {
             element.appendChild(dropPlaceholderContainer);
           } else {
-            element.insertBefore(dropPlaceholderContainer, element.firstElementChild);
+            element.insertBefore(dropPlaceholderContainer, getFirstElementChild(element));
           }
         }
 
@@ -608,8 +623,7 @@ function fireOnDropReady({ getOptions }: ContainerProps) {
         addedIndex: adjustedAddedIndex,
         removedIndex,
         payload,
-        element: element ? element.firstElementChild as HTMLElement : undefined,
-        position: null,
+        element: element ? getFirstElementChild(element) as HTMLElement : undefined
       });
     }
   };

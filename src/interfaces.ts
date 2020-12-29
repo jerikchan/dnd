@@ -1,4 +1,4 @@
-import { ContainerOptions } from './exportTypes';
+import { ContainerOptions, Guideline } from './exportTypes';
 
 export type Position = { x: number; y: number };
 export type MousePosition = { clientX: number; clientY: number };
@@ -142,3 +142,29 @@ export interface LayoutManager {
   getPosition: (position: Position) => Rect;
   setBegin: (style: CSSStyleDeclaration, value: string) => void;
 }
+
+export interface SnappableInfo {
+  dragStart: () => void,
+  drag: (ghostInfo: GhostInfo) => void,
+  dragEnd: () => void,
+  checkSnapDrag: (ghostInfo: GhostInfo, distX: number, distY: number) => {
+    isSnap: boolean,
+    offset: number,
+  }[],
+}
+
+export interface SnappableRenderType {
+  type: "snap" | "bounds";
+  pos: number;
+}
+
+export interface ElementGuidelineValue {
+  element: HTMLElement;
+  top?: boolean;
+  left?: boolean;
+  right?: boolean;
+  bottom?: boolean;
+  refresh?: boolean;
+}
+
+export type ElementGuidelines = Array<ElementGuidelineValue | HTMLElement>;

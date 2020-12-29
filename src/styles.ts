@@ -1,4 +1,4 @@
-import { containerClass, disbaleTouchActions, dropPlaceholderFlexContainerClass, dropPlaceholderInnerClass, dropPlaceholderWrapperClass, ghostClass, noUserSelectClass, stretcherElementClass, wrapperClass, dropPlaceholderDefaultClass } from './constants';
+import { containerClass, disbaleTouchActions, dropPlaceholderFlexContainerClass, dropPlaceholderInnerClass, dropPlaceholderWrapperClass, ghostClass, noUserSelectClass, stretcherElementClass, wrapperClass, dropPlaceholderDefaultClass, guidelineClass } from './constants';
 import { Dictionary } from './interfaces';
 
 const verticalWrapperClass = {
@@ -83,7 +83,25 @@ const css = {
 	[`.${dropPlaceholderDefaultClass}`]: {
 		'background-color': 'rgba(150, 150, 150, 0.1)',
   	'border': '1px solid #ccc',
-	}
+	},
+	[`.${guidelineClass}`]: {
+		'position': 'fixed',
+		'border-color': 'red',
+		'border-width': '0',
+		'z-index': '1001',
+	},
+	[`.${guidelineClass}.bold`]: {
+		'border-style': 'solid',
+	},
+	[`.${guidelineClass}.dashed`]: {
+		'border-style': 'dashed',
+	},
+	[`.${guidelineClass}.horizontal`]: {
+		'border-top-width': '1px',
+	},
+	[`.${guidelineClass}.vertical`]: {
+		'border-left-width': '1px',
+	},
 };
 
 function convertToCssString(css: Dictionary): string {

@@ -10,4 +10,5 @@ export const defaultOptions: ContainerOptions = {
 	shouldAcceptDrop: undefined,
 	shouldAnimateDrop: undefined,
 	disabled: false,
+	snappable: false,
 };

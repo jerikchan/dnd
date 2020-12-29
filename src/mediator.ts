@@ -1,11 +1,11 @@
 import * as constants from './constants';
 import { defaultOptions } from './defaults';
 import dragScroller from './scroller';
-import { Axis, DraggableInfo, ElementX, GhostInfo, IContainer, MousePosition, Position, TopLeft, Orientation } from './interfaces';
-import './polyfills';
+import { Axis, DraggableInfo, ElementX, GhostInfo, IContainer, MousePosition, Position, TopLeft, Orientation, SnappableInfo } from './interfaces';
 import { addCursorStyleToBody, addStyleToHead, removeStyle } from './styles';
 import * as Utils from './utils';
 import { ContainerOptions } from './exportTypes';
+import snappable from './snappable';
 
 const grabEvents = ['mousedown', 'touchstart'];
 const moveEvents = ['mousemove', 'touchmove'];
@@ -14,6 +14,7 @@ const releaseEvents = ['mouseup', 'touchend'];
 let dragListeningContainers: IContainer[] = null!;
 let grabbedElement: ElementX | null = null;
 let ghostInfo: GhostInfo = null!;
+let snappableInfo: SnappableInfo = null!;
 let draggableInfo: DraggableInfo = null!;
 let containers: IContainer[] = [];
 let isDragging = false;
@@ -91,7 +92,7 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
   ghost.style.position = 'fixed';
   ghost.style.top = '0px';
   ghost.style.left = '0px';
-  ghost.style.transform = null;
+  ghost.style.transform = null!;
   ghost.style.removeProperty('transform');
 
   if (container.shouldUseTransformForGhost()) {
@@ -111,8 +112,8 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
 
   if (container.getOptions().dragClass) {
     setTimeout(() => {
-      Utils.addClass(ghost.firstElementChild as HTMLElement, container.getOptions().dragClass!);
-      const dragCursor = window.getComputedStyle(ghost.firstElementChild!).cursor;
+      Utils.addClass(Utils.getFirstElementChild(ghost) as HTMLElement, container.getOptions().dragClass!);
+      const dragCursor = window.getComputedStyle(Utils.getFirstElementChild(ghost) as HTMLElement).cursor;
       cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
   } else {
@@ -167,7 +168,7 @@ function handleDropAnimation(callback: Function) {
   function animateGhostToPosition({ top, left }: TopLeft, duration: number, dropClass: string | undefined) {
     Utils.addClass(ghostInfo.ghost, 'animated');
     if (dropClass) {
-      Utils.addClass(ghostInfo.ghost.firstElementChild, dropClass);
+      Utils.addClass(Utils.getFirstElementChild(ghostInfo.ghost) as HTMLElement, dropClass);
     }
 
     ghostInfo.topLeft.x = left;
@@ -380,7 +381,7 @@ function onMouseDown(event: MouseEvent & TouchEvent) {
   }
 }
 
-function handleMouseMoveForContainer({ clientX, clientY }: MouseEvent & TouchEvent, orientation: Orientation = 'vertical') {
+function handleMouseMoveForContainer({ clientX, clientY }: { clientX: number, clientY: number }, orientation: Orientation = 'vertical') {
   const beginEnd = draggableInfo.container.layout.getBeginEndOfContainerVisibleRect();
   let mousePos;
   let axis: 'x' | 'y';
@@ -422,27 +423,44 @@ function onMouseMove(event: MouseEvent & TouchEvent) {
   if (!draggableInfo) {
     initiateDrag(e, Utils.getElementCursor(event.target as Element)!);
   } else {
+    let { clientX, clientY } = e;
+
+    if (snappableInfo) {
+      const distX = clientX + ghostInfo.positionDelta.left;
+      const distY = clientY + ghostInfo.positionDelta.top;
+      const [verticalInfo, horizontalInfo] = snappableInfo.checkSnapDrag(ghostInfo, distX, distY);
+      const {
+          offset: verticalOffset,
+      } = verticalInfo;
+      const {
+          offset: horizontalOffset,
+      } = horizontalInfo;
+
+      clientX = distX - verticalOffset - ghostInfo.positionDelta.left;
+      clientY = distY - horizontalOffset - ghostInfo.positionDelta.top;
+    }
+
     const containerOptions = draggableInfo.container.getOptions();
     const isContainDrag = containerOptions.behaviour === 'contain';
     if (isContainDrag) {
-      handleMouseMoveForContainer(e, containerOptions.orientation);
+      handleMouseMoveForContainer({ clientX, clientY }, containerOptions.orientation);
     } else if (sourceContainerLockAxis) {
       if (sourceContainerLockAxis === 'y') {
-        ghostInfo.topLeft.y = e.clientY + ghostInfo.positionDelta.top;
-        draggableInfo.position.y = e.clientY + ghostInfo.centerDelta.y;
-        draggableInfo.mousePosition.y = e.clientY;
+        ghostInfo.topLeft.y = clientY + ghostInfo.positionDelta.top;
+        draggableInfo.position.y = clientY + ghostInfo.centerDelta.y;
+        draggableInfo.mousePosition.y = clientY;
       } else if (sourceContainerLockAxis === 'x') {
-        ghostInfo.topLeft.x = e.clientX + ghostInfo.positionDelta.left;
-        draggableInfo.position.x = e.clientX + ghostInfo.centerDelta.x;
-        draggableInfo.mousePosition.x = e.clientX;
+        ghostInfo.topLeft.x = clientX + ghostInfo.positionDelta.left;
+        draggableInfo.position.x = clientX + ghostInfo.centerDelta.x;
+        draggableInfo.mousePosition.x = clientX;
       }
     } else {
-      ghostInfo.topLeft.x = e.clientX + ghostInfo.positionDelta.left;
-      ghostInfo.topLeft.y = e.clientY + ghostInfo.positionDelta.top;
-      draggableInfo.position.x = e.clientX + ghostInfo.centerDelta.x;
-      draggableInfo.position.y = e.clientY + ghostInfo.centerDelta.y;
-      draggableInfo.mousePosition.x = e.clientX;
-      draggableInfo.mousePosition.y = e.clientY;
+      ghostInfo.topLeft.x = clientX + ghostInfo.positionDelta.left;
+      ghostInfo.topLeft.y = clientY + ghostInfo.positionDelta.top;
+      draggableInfo.position.x = clientX + ghostInfo.centerDelta.x;
+      draggableInfo.position.y = clientY + ghostInfo.centerDelta.y;
+      draggableInfo.mousePosition.x = clientX;
+      draggableInfo.mousePosition.y = clientY;
     }
 
     translateGhost();
@@ -476,6 +494,10 @@ function onMouseUp() {
   if (cursorStyleElement) {
     removeStyle(cursorStyleElement);
     cursorStyleElement = null;
+  }
+  if (snappableInfo) {
+    snappableInfo.dragEnd();
+    snappableInfo = null!;
   }
   if (draggableInfo) {
     containerRectableWatcher.stop();
@@ -526,6 +548,12 @@ function handleDragImmediate(draggableInfo: DraggableInfo, dragListeningContaine
   }
 }
 
+function handleSnappable() {
+  if (snappableInfo) {
+    snappableInfo.drag(ghostInfo);
+  }
+}
+
 function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: DraggableInfo) => boolean {
   let targetContainers = dragListeningContainers;
   let animationFrame: number | null = null;
@@ -535,6 +563,7 @@ function dragHandler(dragListeningContainers: IContainer[]): (draggableInfo: Dra
         if (isDragging && !dropAnimationStarted) {
           handleDragImmediate(draggableInfo, targetContainers);
           handleScroll({ draggableInfo });
+          handleSnappable();
         }
         animationFrame = null;
       })
@@ -570,12 +599,22 @@ function fireOnDragStartEnd(isStart: boolean) {
   });
 }
 
+function getSnappableInfo(draggableInfo: DraggableInfo) {
+  const { element: snappableElement } = draggableInfo;
+  const elementGuidelines = Array.prototype.slice.call(document.querySelectorAll("." + constants.wrapperClass)).filter((element) => {
+    return element !== snappableElement && element !== ghostInfo.ghost;
+  });
+
+  return snappable(draggableInfo, elementGuidelines);
+}
+
 function initiateDrag(position: MousePosition, cursor: string) {
   if (grabbedElement !== null) {
     isDragging = true;
     const container = (containers.filter(p => grabbedElement!.parentElement === p.element)[0]) as IContainer;
     container.setDraggables();
-    sourceContainerLockAxis = container.getOptions().lockAxis ? container.getOptions().lockAxis!.toLowerCase() as Axis : null;
+    const options = container.getOptions();
+    sourceContainerLockAxis = options.lockAxis ? options.lockAxis!.toLowerCase() as Axis : null;
 
     draggableInfo = getDraggableInfo(grabbedElement);
     ghostInfo = getGhostElement(
@@ -604,6 +643,12 @@ function initiateDrag(position: MousePosition, cursor: string) {
     fireOnDragStartEnd(true);
     handleDrag(draggableInfo);
     getGhostParent().appendChild(ghostInfo.ghost);
+
+    // only usage in drop-zone
+    if (options.snappable && options.behaviour === 'drop-zone') {
+      snappableInfo = getSnappableInfo(draggableInfo);
+      snappableInfo.dragStart();
+    }
 
     containerRectableWatcher.start();
   }

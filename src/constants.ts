@@ -25,3 +25,5 @@ export const dropPlaceholderDefaultClass = 'fai-dnd-drop-preview-default-class';
 export const dropPlaceholderInnerClass = 'fai-dnd-drop-preview-inner-class';
 export const dropPlaceholderWrapperClass = 'fai-dnd-drop-preview-constant-class'
 export const dropPlaceholderFlexContainerClass = 'fai-dnd-drop-preview-flex-container-class'
+
+export const guidelineClass = 'fai-dnd-guideline';
