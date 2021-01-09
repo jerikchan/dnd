@@ -75,6 +75,7 @@ var container = FaiDnD(containerElement, options);
 |shouldAcceptDrop|function|`undefined`|*See descriptions below*|
 |onDragEnter|function|`undefined`|*See descriptions below*|
 |onDragLeave|function|`undefined`|*See descriptions below*|
+|dragOnPoint|boolean|`false`|Drag follows mouse point on target center|
 
 ---
 

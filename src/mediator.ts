@@ -122,13 +122,19 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
 
+  let offsetX = 0, offsetY = 0;
+  if (container.getOptions().dragOnPoint) {
+    offsetX = x - left - (wrapperVisibleRect.right - wrapperVisibleRect.left) / 2;
+    offsetY = y - top - (wrapperVisibleRect.bottom - wrapperVisibleRect.top) / 2;
+  }
+
   return {
     ghost: ghost,
-    centerDelta: { x: midX - x, y: midY - y },
-    positionDelta: { left: left - x, top: top - y },
+    centerDelta: { x: midX - x + offsetX, y: midY - y + offsetY },
+    positionDelta: { left: left - x + offsetX, top: top - y + offsetY },
     topLeft: {
-      x: left,
-      y: top
+      x: left + offsetX,
+      y: top + offsetY
     }
   };
 }
@@ -137,13 +143,12 @@ function getDraggableInfo(draggableElement: HTMLElement): DraggableInfo {
   const container = containers.filter(p => draggableElement.parentElement === p.element)[0];
   const draggableIndex = container.draggables.indexOf(draggableElement);
   const getGhostParent = container.getOptions().getGhostParent;
-  const draggableRect = draggableElement.getBoundingClientRect();
   return {
     container,
     element: draggableElement,
     size: {
-      offsetHeight: draggableRect.bottom - draggableRect.top,
-      offsetWidth: draggableRect.right - draggableRect.left,
+      offsetHeight: 0,
+      offsetWidth: 0,
     },
     elementIndex: draggableIndex,
     payload: container.getOptions().getChildPayload ? container.getOptions().getChildPayload!(draggableIndex) : undefined,
@@ -422,7 +427,7 @@ function onMouseMove(event: MouseEvent & TouchEvent) {
   const e = getPointerEvent(event);
   if (!draggableInfo) {
     initiateDrag(e, Utils.getElementCursor(event.target as Element)!);
-  } else {
+  } else if (ghostInfo) {
     let { clientX, clientY } = e;
 
     if (snappableInfo) {
@@ -625,12 +630,30 @@ function initiateDrag(position: MousePosition, cursor: string) {
     sourceContainerLockAxis = options.lockAxis ? options.lockAxis!.toLowerCase() as Axis : null;
 
     draggableInfo = getDraggableInfo(grabbedElement);
+    fireOnDragStartEnd(true);
+    // delay
+    setTimeout(() => {
+      initiateOnDragStart(position, cursor);
+    }, 0);
+  }
+}
+
+function initiateOnDragStart(position: MousePosition, cursor: string) {
+  if (grabbedElement !== null) {
+    const container = (containers.filter(p => grabbedElement!.parentElement === p.element)[0]) as IContainer;
+    const options = container.getOptions();
+
     ghostInfo = getGhostElement(
       grabbedElement,
       { x: position.clientX, y: position.clientY },
       draggableInfo.container,
       cursor
     );
+    const draggableRect = grabbedElement.getBoundingClientRect();
+    draggableInfo.size = {
+      offsetHeight: draggableRect.bottom - draggableRect.top,
+      offsetWidth: draggableRect.right - draggableRect.left,
+    },
     draggableInfo.position = {
       x: position.clientX + ghostInfo.centerDelta.x,
       y: position.clientY + ghostInfo.centerDelta.y,
@@ -639,7 +662,7 @@ function initiateDrag(position: MousePosition, cursor: string) {
       x: position.clientX,
       y: position.clientY,
     };
-
+  
     dragListeningContainers = containers.filter(p => p.isDragRelevant(container, draggableInfo.payload));
     draggableInfo.relevantContainers = dragListeningContainers;
     handleDrag = dragHandler(dragListeningContainers);
@@ -648,16 +671,15 @@ function initiateDrag(position: MousePosition, cursor: string) {
     }
     handleScroll = getScrollHandler(container, dragListeningContainers);
     dragListeningContainers.forEach(p => p.prepareDrag(p, dragListeningContainers));
-    fireOnDragStartEnd(true);
     handleDrag(draggableInfo);
     getGhostParent().appendChild(ghostInfo.ghost);
-
+  
     // only usage in drop-zone
     if (options.snappable && options.behaviour === 'drop-zone') {
       snappableInfo = getSnappableInfo(draggableInfo);
       snappableInfo.dragStart();
     }
-
+  
     containerRectableWatcher.start();
   }
 }

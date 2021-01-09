@@ -74,6 +74,7 @@ export interface Guideline {
 export type GuidelineLineType = 'vertical' | 'horizontal';
 
 export interface ContainerOptions {
+  dragOnPoint?: boolean;
 	behaviour?: 'move' | 'copy' | 'drop-zone' | 'contain';
 	groupName?: string; // if not defined => container will not interfere with other containers
 	orientation?: 'vertical' | 'horizontal';
