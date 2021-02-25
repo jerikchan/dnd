@@ -766,6 +766,12 @@ function Container(element: HTMLElement): (options?: ContainerOptions) => IConta
           element.removeChild(dragResult.dropPlaceholderContainer);
         }
         lastDraggableInfo = null;       
+
+        // TODO: sometimes dragResult was null, but i don't know why
+        if (!dragResult) {
+          dragResult = dragHandler(draggableInfo);
+        }
+
         dragHandler = getDragHandler(props);
         dropHandler(draggableInfo, dragResult!);
         dragResult = null;

@@ -632,9 +632,10 @@ function initiateDrag(position: MousePosition, cursor: string) {
     draggableInfo = getDraggableInfo(grabbedElement);
     fireOnDragStartEnd(true);
     // delay
-    setTimeout(() => {
+    // remove delay, sometimes cause errors
+    // setTimeout(() => {
       initiateOnDragStart(position, cursor);
-    }, 0);
+    // }, 0);
   }
 }
 

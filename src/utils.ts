@@ -204,16 +204,16 @@ export const getParent = (element: Element | null, selector: string) => {
 
 export const hasClass = (element: HTMLElement, cls: string) => {
   return (
-    element.className
+    (element.className + "")
       .split(' ')
       .map(p => p)
       .indexOf(cls) > -1
   );
 };
 
-export const addClass = (element: Element | null | undefined, cls: string) => {
+export const addClass = (element: Element, cls: string) => {
   if (element) {
-    const classes = element.className.split(' ').filter(p => p);
+    const classes = (element.className + "").split(' ').filter(p => p);
     if (classes.indexOf(cls) === -1) {
       classes.unshift(cls);
       element.className = classes.join(' ');
@@ -223,7 +223,7 @@ export const addClass = (element: Element | null | undefined, cls: string) => {
 
 export const removeClass = (element: HTMLElement, cls: string) => {
   if (element) {
-    const classes = element.className.split(' ').filter(p => p && p !== cls);
+    const classes = (element.className + "").split(' ').filter(p => p && p !== cls);
     element.className = classes.join(' ');
   }
 };
