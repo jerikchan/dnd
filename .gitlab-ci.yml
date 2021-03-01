@@ -15,7 +15,7 @@ build:
     # lint
     - npm run lint
     # component build
-    - npm run build#vue-demo
+    - npm run build:vue-demo
     # site deploy
     - vue-cli-service git-push --repo-dir packages/vue-demo/dist/ --repo-target deploy-site --repo-url $FAI_REPO_URL
     # site pull
