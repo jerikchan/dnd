@@ -1,0 +1,40 @@
+stages:
+  - build
+  - notify
+
+build:
+  stage: build
+  except:
+    - tags
+  only:
+    - master
+  script:
+    - nvs use 10.23.0
+    # install
+    - npm run ci
+    # lint
+    - npm run lint
+    # component build
+    - npm run build#vue-demo
+    # site deploy
+    - vue-cli-service git-push --repo-dir packages/vue-demo/dist/ --repo-target deploy-site --repo-url $FAI_REPO_URL
+    # site pull
+    - vue-cli-service git-pull --repo-dir ~/web/docs/dnd/ --repo-target deploy-site --repo-url $FAI_REPO_URL
+  
+# 通知
+notify_failure:
+  stage: notify
+  except:
+    - tags
+  when: on_failure
+  script:
+    - vue-cli-service notify --webhook $FAI_QYWX_WEBHOOK
+
+# 通知
+notify_success:
+  stage: notify
+  except:
+    - tags
+  when: on_success
+  script:
+    - vue-cli-service notify --webhook $FAI_QYWX_WEBHOOK

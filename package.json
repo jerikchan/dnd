@@ -1,29 +1,26 @@
 {
-  "name": "@fk/fai-dnd",
-  "version": "0.13.3",
+  "name": "fai-dnd-monorepo",
+  "private": true,
+  "version": "0.0.0",
   "description": "Drag and Drop library",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "jsnext:main": "dist/index.esm.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "bundle": "rollup -c --environment INCLUDE_DEPS,BUILD:production",
-    "tsc": "tsc --emitDeclarationOnly --outDir dist",
-    "build": "npm run tsc && npm run bundle",
-    "dev": "rollup -c --environment INCLUDE_DEPS,BUILD:development -w"
+    "ci": "yarn install --pure-lockfile --prefer-offline",
+    "dev:core": "yarn workspace @fk/fai-dnd dev",
+    "dev:vue": "yarn workspace @fk/fai-dnd-vue dev",
+    "serve:vue-demo": "yarn workspace vue-demo serve",
+    "serve": "npm-run-all -p dev:core dev:vue serve:vue-demo",
+    "lint": "eslint packages/*/src/**.{js,jsx,vue,ts,tsx}",
+    "lint-fix": "eslint packages/*/src/**.{js,jsx,vue,ts,tsx}",
+    "build:core": "yarn workspace @fk/fai-dnd build",
+    "build:vue": "yarn workspace @fk/fai-dnd-vue build",
+    "build:vue-demo": "yarn workspace vue-demo build",
+    "build": "npm-run-all build:core build:vue build:vue-demo",
+    "prepublishonly": "npm-run-all lint build",
+    "deploy": "lerna publish"
   },
-  "types": "./dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "keywords": [
-    "sortable",
-    "drag and drop",
-    "drag&drop",
-    "drag",
-    "drop",
-    "draggable",
-    "dnd"
-  ],
   "author": {
     "name": "faier",
     "email": "frontend@faisco.cn"
@@ -34,13 +31,38 @@
     "url": "http://gitlab.faidev.cc/frontend/fai-dnd.git"
   },
   "devDependencies": {
-    "@babel/core": "7.3.4",
-    "@babel/preset-env": "7.3.4",
-    "@babel/preset-typescript": "7.3.3",
-    "rollup": "1.4.0",
-    "rollup-plugin-babel": "4.3.2",
-    "rollup-plugin-commonjs": "^9.2.1",
-    "rollup-plugin-uglify": "6.0.2",
-    "typescript": "^3.4.5"
+    "@commitlint/cli": "^12.0.0",
+    "@commitlint/config-conventional": "^12.0.0",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "babel-eslint": "^10.1.0",
+    "commitlint": "^11.0.0",
+    "eslint": "^6.7.2",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-vue": "^6.2.2",
+    "lerna": "^3.22.1",
+    "lint-staged": "^10.5.4",
+    "npm-run-all": "^4.1.5"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,vue,ts,tsx}": [
+      "eslint --fix"
+    ]
+  },
+  "engines": {
+    "node": ">=10.22.0"
   }
 }

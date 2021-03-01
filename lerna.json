@@ -1,0 +1,8 @@
+{
+  "packages": [
+    "packages/*"
+  ],
+  "version": "independent",
+  "npmClient": "npm",
+  "registry": "http://registry.npm.faidev.cc"
+}
