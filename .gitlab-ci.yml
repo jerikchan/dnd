@@ -12,8 +12,6 @@ build:
     - nvs use 10.23.0
     # install
     - npm run ci
-    # lint
-    - npm run lint
     # component build
     - npm run build:vue-demo
     # site deploy

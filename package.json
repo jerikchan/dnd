@@ -18,7 +18,6 @@
     "build:vue": "yarn workspace @fk/fai-dnd-vue build",
     "build:vue-demo": "yarn workspace vue-demo build",
     "build": "npm-run-all build:core build:vue build:vue-demo",
-    "prepublishonly": "npm-run-all lint build",
     "deploy": "lerna publish"
   },
   "author": {
@@ -33,6 +32,7 @@
   "devDependencies": {
     "@commitlint/cli": "^12.0.0",
     "@commitlint/config-conventional": "^12.0.0",
+    "@fk/vue-cli-plugin-cicd": "^1.1.2",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/eslint-config-prettier": "^6.0.0",
