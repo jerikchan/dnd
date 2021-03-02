@@ -13,7 +13,7 @@ build:
     # install
     - npm run ci
     # component build
-    - npm run build:vue-demo
+    - npm run build
     # site deploy
     - vue-cli-service git-push --repo-dir packages/vue-demo/dist/ --repo-target deploy-site --repo-url $FAI_REPO_URL
     # site pull
