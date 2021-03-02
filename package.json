@@ -18,6 +18,7 @@
     "build:vue": "yarn workspace @fk/fai-dnd-vue build",
     "build:vue-demo": "yarn workspace vue-demo build",
     "build": "npm-run-all build:core build:vue build:vue-demo",
+    "predeploy": "yarn lint && yarn build",
     "deploy": "lerna publish"
   },
   "author": {

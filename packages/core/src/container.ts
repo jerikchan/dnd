@@ -271,12 +271,8 @@ function handleDrop({
           getOptions().behaviour === "drop-zone"
             ? actualAddIndex !== null
               ? {
-                  x:
-                    draggableInfo.ghostPosition.x -
-                    rectangles.rect.left,
-                  y:
-                    draggableInfo.ghostPosition.y -
-                    rectangles.rect.top
+                  x: draggableInfo.ghostPosition.x - rectangles.rect.left,
+                  y: draggableInfo.ghostPosition.y - rectangles.rect.top
                 }
               : null
             : null;
