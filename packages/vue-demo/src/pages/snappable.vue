@@ -7,6 +7,7 @@
       :get-ghost-parent="getGhostParent"
       class="container"
       :should-animate-drop="shouldAnimateDrop"
+      drag-on-point="lt"
     >
       <Draggable
         v-for="item in items"
@@ -68,5 +69,6 @@ export default {
 }
 .draggable {
   position: absolute;
+  margin: 0;
 }
 </style>

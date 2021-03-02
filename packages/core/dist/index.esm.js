@@ -1919,6 +1919,10 @@ function getDraggableInfo(draggableElement) {
       x: 0,
       y: 0
     },
+    ghostPosition: {
+      x: 0,
+      y: 0
+    },
     groupName: container.getOptions().groupName,
     ghostParent: getGhostParent ? getGhostParent() : null,
     invalidateShadow: null,
@@ -2253,6 +2257,8 @@ function onMouseMove(event) {
       draggableInfo.position.y = clientY + ghostInfo.centerDelta.y;
       draggableInfo.mousePosition.x = clientX;
       draggableInfo.mousePosition.y = clientY;
+      draggableInfo.ghostPosition.x = clientX + ghostInfo.positionDelta.left;
+      draggableInfo.ghostPosition.y = clientY + ghostInfo.positionDelta.top;
     }
 
     translateGhost();
@@ -2878,8 +2884,8 @@ function handleDrop(_ref4) {
 
         var rectangles = layout.getContainerRectangles();
         var position = getOptions().behaviour === "drop-zone" ? actualAddIndex !== null ? {
-          x: draggableInfo.position.x - draggableInfo.size.offsetWidth / 2 - rectangles.rect.left,
-          y: draggableInfo.position.y - draggableInfo.size.offsetHeight / 2 - rectangles.rect.top
+          x: draggableInfo.ghostPosition.x - rectangles.rect.left,
+          y: draggableInfo.ghostPosition.y - rectangles.rect.top
         } : null : null;
         var dropHandlerParams = {
           removedIndex: removedIndex,

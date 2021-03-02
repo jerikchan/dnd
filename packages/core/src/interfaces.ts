@@ -60,6 +60,7 @@ export interface DraggableInfo {
   elementIndex: number;
   position: Position;
   mousePosition: Position;
+  ghostPosition: Position;
   groupName?: string;
   ghostParent: HTMLElement | null;
   relevantContainers: IContainer[];

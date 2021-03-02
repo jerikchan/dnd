@@ -246,6 +246,7 @@ function getDraggableInfo(draggableElement: HTMLElement): DraggableInfo {
       : undefined,
     targetElement: null,
     position: { x: 0, y: 0 },
+    ghostPosition: { x: 0, y: 0 },
     groupName: container.getOptions().groupName,
     ghostParent: getGhostParent ? getGhostParent() : null,
     invalidateShadow: null,
@@ -629,6 +630,8 @@ function onMouseMove(event: MouseEvent & TouchEvent) {
       draggableInfo.position.y = clientY + ghostInfo.centerDelta.y;
       draggableInfo.mousePosition.x = clientX;
       draggableInfo.mousePosition.y = clientY;
+      draggableInfo.ghostPosition.x = clientX + ghostInfo.positionDelta.left;
+      draggableInfo.ghostPosition.y = clientY + ghostInfo.positionDelta.top;
     }
 
     translateGhost();

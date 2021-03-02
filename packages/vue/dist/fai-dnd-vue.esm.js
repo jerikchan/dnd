@@ -1,7 +1,7 @@
 /**
  * Bundle of: @fk/fai-dnd-vue
- * Generated: 2021-03-01
- * Version: 0.9.2
+ * Generated: 2021-03-02
+ * Version: 0.9.3
  */
 
 import { faiDnD, dropHandlers, constants } from '@fk/fai-dnd';

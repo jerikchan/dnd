@@ -272,12 +272,10 @@ function handleDrop({
             ? actualAddIndex !== null
               ? {
                   x:
-                    draggableInfo.position.x -
-                    draggableInfo.size.offsetWidth / 2 -
+                    draggableInfo.ghostPosition.x -
                     rectangles.rect.left,
                   y:
-                    draggableInfo.position.y -
-                    draggableInfo.size.offsetHeight / 2 -
+                    draggableInfo.ghostPosition.y -
                     rectangles.rect.top
                 }
               : null
