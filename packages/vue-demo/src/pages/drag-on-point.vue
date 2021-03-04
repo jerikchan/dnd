@@ -25,7 +25,7 @@ import { Container, Draggable } from "@fk/fai-dnd-vue";
 import { applyDrag, generateItems } from "../utils/helpers";
 
 export default {
-  name: "DragHandle",
+  name: "DragOnPoint",
 
   components: { Container, Draggable },
 

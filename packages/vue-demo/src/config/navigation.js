@@ -29,7 +29,8 @@ export default [
     page("drag-on-point", "Drag on which point"),
     page("transition-duration", "Animation duration 1000ms"),
     page("table", "Custom tag (table)"),
-    page("snappable", "Snappable")
+    page("snappable", "Snappable"),
+    page("position", "Position when behaviour drop-zone")
   ]),
   section("Interaction", [page("events", "Callbacks and Events")])
 ];
