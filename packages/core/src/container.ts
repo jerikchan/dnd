@@ -202,6 +202,7 @@ function resetDraggables({ element, draggables, layout }: ContainerProps) {
       setAnimation(p, false);
       layout.setTranslation(p, 0);
       layout.setVisibility(p, true);
+      layout.setSize(p.style, "");
     });
 
     if (element[stretcherElementInstance]) {
@@ -382,15 +383,42 @@ function getPosition({ element, layout }: ContainerProps) {
   };
 }
 
-function getElementSize({ layout }: ContainerProps) {
+function getElementSize({ layout, getOptions }: ContainerProps) {
   let elementSize: number | null = null;
+  const { getPlaceholderSize } = getOptions();
   return ({ draggableInfo, dragResult }: DragInfo) => {
-    if (dragResult.pos === null) {
+    // 自定义 element size
+    if (getPlaceholderSize) {
+      elementSize =
+        elementSize || getPlaceholderSize(getOptions(), draggableInfo.payload);
+    } else if (dragResult.pos === null) {
       return (elementSize = null);
     } else {
       elementSize = elementSize || layout.getSize(draggableInfo.size);
     }
     return { elementSize };
+  };
+}
+
+function setRemovedItemElementSize({
+  layout,
+  getOptions,
+  draggables
+}: ContainerProps) {
+  let elementSize: number | null = null;
+  const { getPlaceholderSize } = getOptions();
+  return ({ draggableInfo, dragResult }: DragInfo) => {
+    if (dragResult.removedIndex !== null) {
+      if (getPlaceholderSize) {
+        elementSize =
+          elementSize ||
+          getPlaceholderSize(getOptions(), draggableInfo.payload);
+        layout.setSize(
+          draggables[dragResult.removedIndex].style,
+          elementSize + "px"
+        );
+      }
+    }
   };
 }
 
@@ -847,6 +875,7 @@ function getDragHandler(params: ContainerProps) {
       setRemovedItemVisibilty,
       getPosition,
       getElementSize,
+      setRemovedItemElementSize,
       handleTargetContainer,
       invalidateShadowBeginEndIfNeeded,
       getNextAddedIndex,

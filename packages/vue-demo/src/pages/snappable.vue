@@ -8,6 +8,7 @@
       class="container"
       :should-animate-drop="shouldAnimateDrop"
       drag-on-point="lt"
+      :get-child-payload="getChildPayload"
     >
       <Draggable
         v-for="item in items"
@@ -46,6 +47,9 @@ export default {
   },
 
   methods: {
+    getChildPayload(index) {
+      return this.items[index];
+    },
     shouldAnimateDrop() {
       return false;
     },

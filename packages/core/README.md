@@ -76,6 +76,7 @@ var container = FaiDnD(containerElement, options);
 |onDragEnter|function|`undefined`|*See descriptions below*|
 |onDragLeave|function|`undefined`|*See descriptions below*|
 |dragOnPoint|boolean|`false`|Drag follows mouse point on target center|
+|getPlaceholderSize|function|`undefined`|自定义拖拽过程中占位元素的尺寸|
 
 ---
 
@@ -210,3 +211,18 @@ function onDragLeave() {
   ...
 }
 ```
+
+### getPlaceholderSize
+
+The function to be called by the relevant container before drag starts to determine the placeholder element size.
+```js
+function getPlaceholderSize(sourceContainerOptions, payload) {
+  ...
+}
+```
+
+#### Parameters
+- **sourceContainerOptions** : `object` : options of the source container. (parent container of the dragged item)
+- **payload** : `object` : the payload object retrieved by calling *getChildPayload* function.
+#### Returns
+- **boolean** : **true / false**

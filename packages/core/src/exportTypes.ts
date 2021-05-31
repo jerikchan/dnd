@@ -1,4 +1,4 @@
-import { ElementGuidelines } from "./interfaces";
+import { DraggableInfo, ElementGuidelines } from "./interfaces";
 
 export interface FaiDnD {
   dispose: () => void;
@@ -129,4 +129,8 @@ export interface ContainerOptions {
   disabled?: boolean;
   snappable?: boolean;
   elementGuidelines?: ElementGuidelines;
+  getPlaceholderSize?: (
+    sourceContainerOptions: ContainerOptions,
+    payload: any
+  ) => number;
 }

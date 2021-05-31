@@ -30,7 +30,8 @@ export default [
     page("transition-duration", "Animation duration 1000ms"),
     page("table", "Custom tag (table)"),
     page("snappable", "Snappable"),
-    page("position", "Position when behaviour drop-zone")
+    page("position", "Position when behaviour drop-zone"),
+    page("placeholder-size", "Get custom placeholder size")
   ]),
   section("Interaction", [page("events", "Callbacks and Events")])
 ];
