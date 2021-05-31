@@ -1,14 +1,14 @@
 {
   "name": "vue-demo",
   "private": true,
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Fai Dnd Vue - Demo project",
   "scripts": {
     "serve": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
-    "@fk/fai-dnd-vue": "^0.9.4",
+    "@fk/fai-dnd-vue": "^0.9.5",
     "vue": "^2.5.16",
     "vue-router": "^3.0.1"
   },
