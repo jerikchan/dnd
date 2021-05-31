@@ -1,6 +1,6 @@
 {
   "name": "@fk/fai-dnd",
-  "version": "0.13.5",
+  "version": "0.13.6",
   "description": "Drag and Drop library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -42,5 +42,6 @@
     "rollup-plugin-commonjs": "^9.2.1",
     "rollup-plugin-uglify": "6.0.2",
     "typescript": "^3.4.5"
-  }
+  },
+  "gitHead": "4b79bc41739d28146caf13f059dc3e28fd3a217c"
 }
