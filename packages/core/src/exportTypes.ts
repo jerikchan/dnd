@@ -1,4 +1,4 @@
-import { DraggableInfo, ElementGuidelines } from "./interfaces";
+import { ElementGuidelines } from "./interfaces";
 
 export interface FaiDnD {
   dispose: () => void;

@@ -14,6 +14,9 @@ build:
     - npm run ci
     # component build
     - npm run build
+    # npm deploy
+    - vue-cli-service npm-publish --npm-repo-dir ./packages/core/ --repo-url $FAI_REPO_URL --npm-registry $FAI_NPM_REGISTRY --npm-username $FAI_NPM_USERNAME --npm-password $FAI_NPM_PASSWORD --npm-email $FAI_NPM_EMAIL
+    - vue-cli-service npm-publish --npm-repo-dir ./packages/vue/ --repo-url $FAI_REPO_URL --npm-registry $FAI_NPM_REGISTRY --npm-username $FAI_NPM_USERNAME --npm-password $FAI_NPM_PASSWORD --npm-email $FAI_NPM_EMAIL
     # site deploy
     - vue-cli-service git-push --repo-dir packages/vue-demo/dist/ --repo-target deploy-site --repo-url $FAI_REPO_URL
     # site pull

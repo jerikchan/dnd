@@ -197,13 +197,21 @@ function findDraggebleAtPos({ layout }: { layout: LayoutManager }) {
 }
 
 function resetDraggables({ element, draggables, layout }: ContainerProps) {
-  return function() {
+  return function(dragResult: DragResult) {
     draggables.forEach((p: ElementX) => {
       setAnimation(p, false);
       layout.setTranslation(p, 0);
       layout.setVisibility(p, true);
-      layout.setSize(p.style, "");
     });
+
+    if (dragResult.removedIndex !== null) {
+      if (dragResult.removedSize !== null) {
+        layout.setSize(
+          draggables[dragResult.removedIndex].style,
+          dragResult.removedSize + "px"
+        );
+      }
+    }
 
     if (element[stretcherElementInstance]) {
       element[stretcherElementInstance].parentNode.removeChild(
@@ -248,10 +256,11 @@ function handleDrop({
   });
   return function(
     draggableInfo: DraggableInfo,
-    { addedIndex, removedIndex }: DragResult,
+    dragResult: DragResult,
     forDispose = false
   ) {
-    draggablesReset();
+    const { addedIndex, removedIndex } = dragResult;
+    draggablesReset(dragResult);
     // if drop zone is valid => complete drag else do nothing everything will be reverted by draggablesReset()
     if (!draggableInfo.cancelDrop) {
       if (
@@ -405,6 +414,7 @@ function setRemovedItemElementSize({
   getOptions,
   draggables
 }: ContainerProps) {
+  let removedSize: number | null = null;
   let elementSize: number | null = null;
   const { getPlaceholderSize } = getOptions();
   return ({ draggableInfo, dragResult }: DragInfo) => {
@@ -413,12 +423,17 @@ function setRemovedItemElementSize({
         elementSize =
           elementSize ||
           getPlaceholderSize(getOptions(), draggableInfo.payload);
+
+        removedSize =
+          removedSize || layout.getSize(draggables[dragResult.removedIndex]);
         layout.setSize(
           draggables[dragResult.removedIndex].style,
           elementSize + "px"
         );
       }
     }
+
+    return { removedSize };
   };
 }
 
@@ -897,7 +912,8 @@ function getDefaultDragResult() {
     removedIndex: null,
     elementSize: null,
     pos: null,
-    shadowBeginEnd: null
+    shadowBeginEnd: null,
+    removedSize: null
   };
 }
 

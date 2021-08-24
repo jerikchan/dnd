@@ -48,6 +48,7 @@ export interface DragResult {
   };
   containerBoxChanged?: boolean;
   dropPlaceholderContainer?: HTMLDivElement;
+  removedSize: number | null;
 }
 
 export interface DraggableInfo {
@@ -65,6 +66,7 @@ export interface DraggableInfo {
   ghostParent: HTMLElement | null;
   relevantContainers: IContainer[];
   cancelDrop?: boolean;
+  removedSize?: number;
 }
 
 export interface ContainerProps {

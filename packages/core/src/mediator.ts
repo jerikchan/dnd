@@ -344,7 +344,11 @@ function handleDropAnimation(callback: Function) {
             container.getOptions().dropClass
           );
         } else {
-          const { removedIndex, elementSize } = container.getDragResult()!;
+          const {
+            removedIndex,
+            elementSize,
+            removedSize
+          } = container.getDragResult()!;
           const layout = container.layout;
           // drag ghost to back
           container.getTranslateCalculator({
@@ -353,7 +357,8 @@ function handleDropAnimation(callback: Function) {
               addedIndex: removedIndex,
               elementSize,
               pos: undefined!,
-              shadowBeginEnd: undefined!
+              shadowBeginEnd: undefined!,
+              removedSize
             }
           });
           const prevDraggableEnd =
