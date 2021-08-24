@@ -172,6 +172,10 @@ export default function layoutManager(
     propMapper.set(element, "setSize", size);
   }
 
+  function getStyleSize(style: CSSStyleDeclaration) {
+    return propMapper.get(style, "setSize");
+  }
+
   function getAxisValue(position: Position) {
     return propMapper.get(position, "dragPosition");
   }
@@ -295,6 +299,7 @@ export default function layoutManager(
     invalidate,
     invalidateRects,
     getPosition,
-    setBegin
+    setBegin,
+    getStyleSize
   };
 }

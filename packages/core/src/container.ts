@@ -205,10 +205,10 @@ function resetDraggables({ element, draggables, layout }: ContainerProps) {
     });
 
     if (dragResult.removedIndex !== null) {
-      if (dragResult.removedSize !== null) {
+      if (dragResult.removedStyleSize !== null) {
         layout.setSize(
           draggables[dragResult.removedIndex].style,
-          dragResult.removedSize + "px"
+          dragResult.removedStyleSize
         );
       }
     }
@@ -414,7 +414,7 @@ function setRemovedItemElementSize({
   getOptions,
   draggables
 }: ContainerProps) {
-  let removedSize: number | null = null;
+  let removedStyleSize: string | null = null;
   let elementSize: number | null = null;
   const { getPlaceholderSize } = getOptions();
   return ({ draggableInfo, dragResult }: DragInfo) => {
@@ -424,8 +424,10 @@ function setRemovedItemElementSize({
           elementSize ||
           getPlaceholderSize(getOptions(), draggableInfo.payload);
 
-        removedSize =
-          removedSize || layout.getSize(draggables[dragResult.removedIndex]);
+        removedStyleSize =
+          removedStyleSize !== null
+            ? removedStyleSize
+            : layout.getStyleSize(draggables[dragResult.removedIndex].style);
         layout.setSize(
           draggables[dragResult.removedIndex].style,
           elementSize + "px"
@@ -433,7 +435,7 @@ function setRemovedItemElementSize({
       }
     }
 
-    return { removedSize };
+    return { removedStyleSize };
   };
 }
 
@@ -913,7 +915,7 @@ function getDefaultDragResult() {
     elementSize: null,
     pos: null,
     shadowBeginEnd: null,
-    removedSize: null
+    removedStyleSize: null
   };
 }
 

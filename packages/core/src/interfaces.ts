@@ -48,7 +48,7 @@ export interface DragResult {
   };
   containerBoxChanged?: boolean;
   dropPlaceholderContainer?: HTMLDivElement;
-  removedSize: number | null;
+  removedStyleSize: string | null;
 }
 
 export interface DraggableInfo {
@@ -66,7 +66,6 @@ export interface DraggableInfo {
   ghostParent: HTMLElement | null;
   relevantContainers: IContainer[];
   cancelDrop?: boolean;
-  removedSize?: number;
 }
 
 export interface ContainerProps {
@@ -107,6 +106,7 @@ export interface GhostInfo {
 }
 
 export interface LayoutManager {
+  getStyleSize: (style: CSSStyleDeclaration) => string;
   getSize: (element: HTMLElement | OffsetSize) => number;
   getContainerRectangles: () => {
     rect: any;

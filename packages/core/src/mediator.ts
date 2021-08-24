@@ -347,7 +347,7 @@ function handleDropAnimation(callback: Function) {
           const {
             removedIndex,
             elementSize,
-            removedSize
+            removedStyleSize
           } = container.getDragResult()!;
           const layout = container.layout;
           // drag ghost to back
@@ -358,7 +358,7 @@ function handleDropAnimation(callback: Function) {
               elementSize,
               pos: undefined!,
               shadowBeginEnd: undefined!,
-              removedSize
+              removedStyleSize
             }
           });
           const prevDraggableEnd =
