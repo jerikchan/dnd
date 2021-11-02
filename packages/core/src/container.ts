@@ -291,7 +291,8 @@ function handleDrop({
           removedIndex,
           addedIndex: actualAddIndex,
           payload: draggableInfo.payload,
-          position
+          position,
+          draggableInfo
         };
         dropHandler(dropHandlerParams, getOptions().onDrop);
       }

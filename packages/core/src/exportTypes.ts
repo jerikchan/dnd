@@ -1,4 +1,4 @@
-import { ElementGuidelines } from "./interfaces";
+import { DraggableInfo, ElementGuidelines } from "./interfaces";
 
 export interface FaiDnD {
   dispose: () => void;
@@ -30,6 +30,7 @@ export interface DropResult {
   payload?: any;
   element?: HTMLElement;
   position?: DropPosition | null;
+  draggableInfo?: DraggableInfo;
 }
 
 export interface DropPlaceholderOptions {
