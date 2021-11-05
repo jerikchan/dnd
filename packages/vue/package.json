@@ -1,6 +1,6 @@
 {
   "name": "@fk/fai-dnd-vue",
-  "version": "0.14.2",
+  "version": "0.14.3",
   "description": "Vue wrappers for @fk/fai-dnd",
   "author": "faier",
   "homepage": "http://dnd-vue.docs.aaa.cn",
@@ -43,7 +43,7 @@
     "url": "http://gitlab.faidev.cc/frontend/fai-dnd-vue/issues"
   },
   "peerDependencies": {
-    "@fk/fai-dnd": "^0.14.2"
+    "@fk/fai-dnd": "^0.14.0"
   },
   "devDependencies": {
     "babel-jest": "^23.4.0",
