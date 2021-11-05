@@ -1,6 +1,6 @@
 {
   "name": "@fk/fai-dnd-vue",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "Vue wrappers for @fk/fai-dnd",
   "author": "faier",
   "homepage": "http://dnd-vue.docs.aaa.cn",

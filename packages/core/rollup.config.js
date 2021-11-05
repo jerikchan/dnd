@@ -8,7 +8,7 @@ const extensions = [
 function output(ext, format = 'umd') {
   return {
     name: 'FaiDnd',
-    file: `./dist/index.${ext}`,
+    file: `./dist/fai-dnd.${ext}`,
     format,
     exports: 'named',
   };

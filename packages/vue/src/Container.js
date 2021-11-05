@@ -105,7 +105,8 @@ export default {
     snappable: { type: Boolean, default: false },
     elementGuidelines: { type: Array, default: () => [] },
     dragOnPoint: { type: [Boolean, String], default: false },
-    getPlaceholderSize: Function
+    getPlaceholderSize: Function,
+    shouldHitContainer: Function
   },
   render: function(createElement) {
     const tagProps = getTagProps(this);

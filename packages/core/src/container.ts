@@ -291,8 +291,7 @@ function handleDrop({
           removedIndex,
           addedIndex: actualAddIndex,
           payload: draggableInfo.payload,
-          position,
-          draggableInfo
+          position
         };
         dropHandler(dropHandlerParams, getOptions().onDrop);
       }
@@ -345,7 +344,21 @@ function setRemovedItemVisibilty({ draggables, layout }: ContainerProps) {
   };
 }
 
-function getPosition({ element, layout }: ContainerProps) {
+function shouldHitContainer(
+  options: ContainerOptions,
+  layout: LayoutManager,
+  draggableInfo: DraggableInfo
+) {
+  return options.shouldHitContainer
+    ? options.shouldHitContainer(
+        layout.getContainerRectangles().rect,
+        draggableInfo.ghostPosition,
+        draggableInfo.size
+      )
+    : true;
+}
+
+function getPosition({ element, layout, getOptions }: ContainerProps) {
   return ({ draggableInfo }: DragInfo) => {
     let hitElement = document.elementFromPoint(
       draggableInfo.position.x,
@@ -380,7 +393,11 @@ function getPosition({ element, layout }: ContainerProps) {
         hitElement,
         draggableInfo.relevantContainers
       );
-      if (container && container.element === element) {
+      if (
+        container &&
+        container.element === element &&
+        shouldHitContainer(getOptions(), layout, draggableInfo)
+      ) {
         return {
           pos: layout.getPosition(draggableInfo.position)
         };

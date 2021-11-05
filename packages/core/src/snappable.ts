@@ -308,7 +308,7 @@ function getNearestSnapGuidelineInfo(snapInfo: SnapInfo) {
   };
 }
 
-function getRect(ghostInfo: GhostInfo, distX?: number, distY?: number) {
+function getGhostRect(ghostInfo: GhostInfo, distX?: number, distY?: number) {
   const rect = ghostInfo.ghost.getBoundingClientRect();
   const left = typeof distX !== "undefined" ? distX : ghostInfo.topLeft.x;
   const top = typeof distY !== "undefined" ? distY : ghostInfo.topLeft.y;
@@ -428,7 +428,7 @@ export default function snappable(
     }
 
     const snapInfos: SnapInfos = [];
-    const rect = getRect(ghostInfo);
+    const rect = getGhostRect(ghostInfo);
     snapInfos.push(checkSnaps(rect, guidelines, { snapThreshold: 0 }));
     const verticalSnapPoses: SnappableRenderType[] = [];
     const horizontalSnapPoses: SnappableRenderType[] = [];
@@ -507,7 +507,7 @@ export default function snappable(
   }
 
   function checkSnapDrag(ghostInfo: GhostInfo, distX: number, distY: number) {
-    const rect = getRect(ghostInfo, distX, distY);
+    const rect = getGhostRect(ghostInfo, distX, distY);
     const {
       horizontal: horizontalSnapInfo,
       vertical: verticalSnapInfo

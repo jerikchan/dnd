@@ -11,5 +11,6 @@ export const defaultOptions: ContainerOptions = {
   shouldAnimateDrop: undefined,
   disabled: false,
   snappable: false,
-  dragOnPoint: false
+  dragOnPoint: false,
+  shouldHitContainer: undefined
 };

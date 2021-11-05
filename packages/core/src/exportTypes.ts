@@ -1,4 +1,10 @@
-import { DraggableInfo, ElementGuidelines } from "./interfaces";
+import {
+  DraggableInfo,
+  ElementGuidelines,
+  Position,
+  OffsetSize,
+  Rect
+} from "./interfaces";
 
 export interface FaiDnD {
   dispose: () => void;
@@ -30,7 +36,6 @@ export interface DropResult {
   payload?: any;
   element?: HTMLElement;
   position?: DropPosition | null;
-  draggableInfo?: DraggableInfo;
 }
 
 export interface DropPlaceholderOptions {
@@ -134,4 +139,9 @@ export interface ContainerOptions {
     sourceContainerOptions: ContainerOptions,
     payload: any
   ) => number;
+  shouldHitContainer?: (
+    containerRect: Rect,
+    ghostPosition: Position,
+    ghostOffsetSize: OffsetSize
+  ) => boolean;
 }
