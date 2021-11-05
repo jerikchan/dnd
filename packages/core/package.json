@@ -1,6 +1,6 @@
 {
   "name": "@fk/fai-dnd",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "Drag and Drop library",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
