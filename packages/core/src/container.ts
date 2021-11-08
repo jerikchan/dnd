@@ -351,7 +351,7 @@ function shouldHitContainer(
 ) {
   return options.shouldHitContainer
     ? options.shouldHitContainer(
-        layout.getContainerRectangles().rect,
+        layout.getContainerRectangles().visibleRect,
         draggableInfo.ghostPosition,
         draggableInfo.size
       )
