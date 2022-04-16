@@ -102,8 +102,11 @@ function wrapChildren(element: HTMLElement) {
       if (!hasClass(child, wrapperClass)) {
         wrapper = wrapChild(child);
       }
-      wrapper[translationValue] = 0;
-      draggables.push(wrapper);
+      // only wrap child that has wrapperClass
+      if (hasClass(child, wrapperClass)) {
+        wrapper[translationValue] = 0;
+        draggables.push(wrapper);
+      }
     } else {
       element.removeChild(child);
     }
@@ -516,6 +519,25 @@ function getShadowBeginEndForDropZone({ layout }: ContainerProps) {
   };
 }
 
+function renderDefaultDropPlaceholderContainer(dropPlaceholder: DropPlaceholderOptions) {
+  const { className } = dropPlaceholder;
+  const innerElement = document.createElement("div");
+  const flex = document.createElement("div");
+  flex.className = dropPlaceholderFlexContainerClass;
+  innerElement.className = `${dropPlaceholderInnerClass} ${className ||
+    dropPlaceholderDefaultClass}`;
+  const dropPlaceholderContainer = document.createElement(
+    "div"
+  ) as HTMLDivElement;
+  dropPlaceholderContainer.className = `${dropPlaceholderWrapperClass}`;
+  dropPlaceholderContainer.style.position = "absolute";
+
+  dropPlaceholderContainer.appendChild(flex);
+  flex.appendChild(innerElement);
+
+  return dropPlaceholderContainer;
+}
+
 function drawDropPlaceholder({ layout, element, getOptions }: ContainerProps) {
   let prevAddedIndex: number | null = null;
   return ({
@@ -528,33 +550,22 @@ function drawDropPlaceholder({ layout, element, getOptions }: ContainerProps) {
   }: DragInfo) => {
     const options = getOptions();
     if (options.dropPlaceholder) {
-      const { animationDuration, className, showOnTop } =
-        typeof options.dropPlaceholder === "boolean"
-          ? (({} as any) as DropPlaceholderOptions)
-          : (options.dropPlaceholder as DropPlaceholderOptions);
+      const dropPlaceholder = typeof options.dropPlaceholder === "boolean"
+        ? (({} as any) as DropPlaceholderOptions)
+        : (options.dropPlaceholder as DropPlaceholderOptions);
+      const { animationDuration, showOnTop, render } = dropPlaceholder;
       if (addedIndex !== null) {
         if (!dropPlaceholderContainer) {
-          const innerElement = document.createElement("div");
-          const flex = document.createElement("div");
-          flex.className = dropPlaceholderFlexContainerClass;
-          innerElement.className = `${dropPlaceholderInnerClass} ${className ||
-            dropPlaceholderDefaultClass}`;
-          dropPlaceholderContainer = document.createElement(
-            "div"
-          ) as HTMLDivElement;
-          dropPlaceholderContainer.className = `${dropPlaceholderWrapperClass}`;
-          dropPlaceholderContainer.style.position = "absolute";
-
+          if (typeof render === "function") {
+            dropPlaceholderContainer = render(dropPlaceholder);
+          } else {
+            dropPlaceholderContainer = renderDefaultDropPlaceholderContainer(dropPlaceholder);
+          }
           if (animationDuration !== undefined) {
             dropPlaceholderContainer.style.transition = `all ${animationDuration}ms ease`;
           }
-
-          dropPlaceholderContainer.appendChild(flex);
-          flex.appendChild(innerElement);
           layout.setSize(dropPlaceholderContainer.style, elementSize + "px");
-
           dropPlaceholderContainer.style.pointerEvents = "none";
-
           if (showOnTop) {
             element.appendChild(dropPlaceholderContainer);
           } else {
@@ -1102,7 +1113,10 @@ const faiDnD: FaiDnDCreator = function(
     },
     setOptions(options: ContainerOptions, merge?: boolean) {
       container.setOptions(options, merge);
-    }
+    },
+    setDraggables() {
+      container.setDraggables();
+    },
   };
 };
 

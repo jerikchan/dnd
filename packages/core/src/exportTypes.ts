@@ -9,6 +9,7 @@ import {
 export interface FaiDnD {
   dispose: () => void;
   setOptions: (options: ContainerOptions, merge?: boolean) => void;
+  setDraggables: () => void;
 }
 
 export type FaiDnDCreator = ((
@@ -42,6 +43,7 @@ export interface DropPlaceholderOptions {
   className?: string;
   animationDuration?: number;
   showOnTop?: boolean;
+  render?: (dropPlaceholder: DropPlaceholderOptions) => HTMLDivElement;
 }
 
 export interface DragStartParams {

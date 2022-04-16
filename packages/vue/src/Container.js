@@ -67,6 +67,7 @@ export default {
     }
 
     this.container.setOptions(mapOptions(this));
+    this.container.setDraggables();
   },
   destroyed() {
     if (this.container) {
